@@ -32,21 +32,12 @@
   <img id="slide" src="" alt="" />
 
   <script>
-    const images = [];
-
-    async function loadManifest() {
-      try {
-        const res = await fetch('assets/manifest.json');
-        if (res.ok) {
-          const data = await res.json();
-          return data.images || [];
-        }
-      } catch (_) {}
-      return images;
-    }
+    const images = [
+      "shakes.png"
+    ];
 
     async function run() {
-      const imgs = await loadManifest();
+      const imgs = images;
       if (!imgs.length) return;
 
       const el = document.getElementById('slide');
