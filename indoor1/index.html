@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1920, height=1080" />
+  <title>Indoor 1</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      background: #000;
+    }
+
+    #slide {
+      width: 1920px;
+      height: 1080px;
+      object-fit: cover;
+      display: block;
+      opacity: 1;
+      transition: opacity 0.8s ease-in-out;
+    }
+
+    #slide.fade {
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+  <img id="slide" src="" alt="" />
+
+  <script>
+    const images = [
+      /* Add image filenames here, e.g.: */
+      /* "photo1.jpg", "photo2.png" */
+    ];
+
+    // Auto-discover: reads filenames injected at build time or falls back to manifest.json
+    async function loadManifest() {
+      try {
+        const res = await fetch('assets/manifest.json');
+        if (res.ok) {
+          const data = await res.json();
+          return data.images || [];
+        }
+      } catch (_) {}
+      return images;
+    }
+
+    async function run() {
+      const imgs = await loadManifest();
+      if (!imgs.length) return;
+
+      const el = document.getElementById('slide');
+      let index = 0;
+
+      function show(i) {
+        el.classList.add('fade');
+        setTimeout(() => {
+          el.src = 'assets/' + imgs[i];
+          el.onload = () => el.classList.remove('fade');
+        }, 800);
+      }
+
+      // Preload first
+      el.src = 'assets/' + imgs[0];
+      el.onload = () => el.classList.remove('fade');
+
+      if (imgs.length > 1) {
+        setInterval(() => {
+          index = (index + 1) % imgs.length;
+          show(index);
+        }, 5000);
+      }
+    }
+
+    run();
+  </script>
+</body>
+</html>
