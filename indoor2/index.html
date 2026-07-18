@@ -52,8 +52,16 @@
       }
     }
 
-    setInterval(checkForUpdates, 5000);
-    checkForUpdates();
+    function maybeCheckForUpdates() {
+      if (document.visibilityState === 'visible') {
+        checkForUpdates();
+      }
+    }
+
+    document.addEventListener('visibilitychange', maybeCheckForUpdates);
+    window.addEventListener('focus', maybeCheckForUpdates);
+    setInterval(maybeCheckForUpdates, 60000);
+    maybeCheckForUpdates();
   </script>
 
   <script>
