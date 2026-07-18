@@ -32,8 +32,33 @@
   <img id="slide" src="" alt="" />
 
   <script>
+    const updateCheckUrl = `${window.location.pathname}?t=${Date.now()}`;
+    let lastSeenHtml = document.documentElement.outerHTML;
+
+    async function checkForUpdates() {
+      try {
+        const response = await fetch(updateCheckUrl, { cache: 'no-store' });
+        if (!response.ok) return;
+
+        const latestHtml = await response.text();
+        if (latestHtml && latestHtml !== lastSeenHtml) {
+          window.location.reload();
+          return;
+        }
+
+        lastSeenHtml = latestHtml || lastSeenHtml;
+      } catch (error) {
+        console.debug('Update check failed', error);
+      }
+    }
+
+    setInterval(checkForUpdates, 5000);
+    checkForUpdates();
+  </script>
+
+  <script>
     const images = [
-      "Wings.jpeg"
+      "Chicken TV.png"
     ];
 
     async function run() {
