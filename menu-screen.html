@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Burgers</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:100%;height:100%;background:#000;overflow:hidden;}
+  body{display:flex;align-items:center;justify-content:center;}
+  #stage{width:1920px;height:1080px;position:relative;display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(6,1fr);gap:1px;background:#1e293b;transform-origin:center center;}
+</style>
+</head>
+<body>
+<div id="stage">
+    <div style="grid-column:1 / span 6;grid-row:1 / span 6;overflow:hidden;background:#0f172a;">
+      <img src="https://raw.githubusercontent.com/atlaslakes/Slim-s/main/indoor1/assets/Burgers%20TV.png" style="width:100%;height:100%;object-fit:cover;">
+    </div></div>
+<script>
+  (function(){
+    var W=1920,H=1080;
+    function fit(){var s=Math.min(window.innerWidth/W,window.innerHeight/H);document.getElementById('stage').style.transform='scale('+s+')';}
+    fit();window.addEventListener('resize',fit);
+    document.querySelectorAll('.slide').forEach(function(box){
+      var imgs=box.querySelectorAll('img');if(imgs.length<2)return;
+      var i=0;setInterval(function(){imgs[i].style.display='none';i=(i+1)%imgs.length;imgs[i].style.display='block';},3000);
+    });
+  })();
+</script>
+</body>
+</html>
