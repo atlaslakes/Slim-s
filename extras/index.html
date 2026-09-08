@@ -32,21 +32,26 @@
   <img id="slide" src="" alt="" />
 
   <script>
-    const updateCheckUrl = `${window.location.pathname}?t=${Date.now()}`;
-    let lastSeenHtml = document.documentElement.outerHTML;
+    let lastSeenHtml = null;
 
     async function checkForUpdates() {
       try {
-        const response = await fetch(updateCheckUrl, { cache: 'no-store' });
+        const url = `${window.location.pathname}?t=${Date.now()}`;
+        const response = await fetch(url, { cache: 'no-store' });
         if (!response.ok) return;
 
         const latestHtml = await response.text();
-        if (latestHtml && latestHtml !== lastSeenHtml) {
-          window.location.reload();
+        if (!latestHtml) return;
+
+        // First successful fetch just establishes the baseline.
+        if (lastSeenHtml === null) {
+          lastSeenHtml = latestHtml;
           return;
         }
 
-        lastSeenHtml = latestHtml || lastSeenHtml;
+        if (latestHtml !== lastSeenHtml) {
+          window.location.reload();
+        }
       } catch (error) {
         console.debug('Update check failed', error);
       }
@@ -66,36 +71,39 @@
 
   <script>
     const images = [
-      "shakes.png"
+      "shakes.png",
+      "rewards.jpeg"
     ];
 
-    async function run() {
-      const imgs = images;
-      if (!imgs.length) return;
+    const INTERVAL_MS = 30000;
+    const FADE_MS = 800;
+
+    (function run() {
+      if (!images.length) return;
 
       const el = document.getElementById('slide');
       let index = 0;
 
+      // Preload so swaps are instant.
+      images.forEach(name => { new Image().src = 'assets/' + name; });
+
       function show(i) {
         el.classList.add('fade');
         setTimeout(() => {
-          el.src = 'assets/' + imgs[i];
-          el.onload = () => el.classList.remove('fade');
-        }, 800);
+          el.src = 'assets/' + images[i];
+          el.classList.remove('fade');
+        }, FADE_MS);
       }
 
-      el.src = 'assets/' + imgs[0];
-      el.onload = () => el.classList.remove('fade');
+      el.src = 'assets/' + images[0];
 
-      if (imgs.length > 1) {
+      if (images.length > 1) {
         setInterval(() => {
-          index = (index + 1) % imgs.length;
+          index = (index + 1) % images.length;
           show(index);
-        }, 5000);
+        }, INTERVAL_MS);
       }
-    }
-
-    run();
+    })();
   </script>
 </body>
 </html>
